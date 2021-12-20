@@ -13,6 +13,7 @@ const registrationSchema = yup
         firstname: validators.firstname.required(),
         lastname: validators.lastname.required(),
         password: validators.password.required(),
+        secretKey: validators.secretKey.required(),
       })
       .required()
       .noUnknown(),
@@ -46,6 +47,7 @@ const adminRegistrationSchema = yup
     firstname: validators.firstname.required(),
     lastname: validators.lastname.required(),
     password: validators.password.required(),
+    secretKey: validators.secretKey.required(),
   })
   .required()
   .noUnknown();

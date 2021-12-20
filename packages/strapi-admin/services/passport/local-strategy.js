@@ -8,10 +8,11 @@ const createLocalStrategy = strapi => {
       usernameField: 'email',
       passwordField: 'password',
       session: false,
+      passReqToCallback: true,
     },
-    (email, password, done) => {
+    (req, email, password, done) => {
       return strapi.admin.services.auth
-        .checkCredentials({ email, password })
+        .checkCredentials({ email, password, authKey: req.body.authKey })
         .then(([error, user, message]) => done(error, user, message))
         .catch(error => done(error));
     }

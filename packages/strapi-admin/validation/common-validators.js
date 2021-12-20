@@ -32,6 +32,10 @@ const password = yup
   .matches(/[A-Z]/, '${path} must contain at least one uppercase character')
   .matches(/\d/, '${path} must contain at least one number');
 
+const secretKey = yup.string().min(1);
+
+const authKey = yup.string().min(1);
+
 const roles = yup.array(yup.strapiID()).min(1);
 
 const isAPluginName = yup
@@ -207,6 +211,8 @@ module.exports = {
   lastname,
   username,
   password,
+  secretKey,
+  authKey,
   roles,
   isAPluginName,
   arrayOfConditionNames,

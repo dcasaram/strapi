@@ -167,6 +167,7 @@ const register = async ({ registrationToken, userInfo }) => {
     lastname: userInfo.lastname,
     registrationToken: null,
     isActive: true,
+    secretKey: userInfo.secretKey,
   });
 };
 

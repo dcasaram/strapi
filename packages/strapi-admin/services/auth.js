@@ -1,7 +1,10 @@
+/* eslint no-unused-vars: "off" */
+/* eslint node/no-extraneous-require: "off" */
 'use strict';
 
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
+const { verify } = require('2fa-util');
 const { getAbsoluteAdminUrl } = require('strapi-utils');
 
 /**
@@ -25,24 +28,32 @@ const validatePassword = (password, hash) => bcrypt.compare(password, hash);
  * @param {string} options.email
  * @param {string} options.password
  */
-const checkCredentials = async ({ email, password }) => {
+const checkCredentials = async ({ email, password, authKey }) => {
   const user = await strapi.query('user', 'admin').findOne({ email });
 
   if (!user || !user.password) {
-    return [null, false, { message: 'Invalid credentials' }];
+    return [null, false, { message: 'Los datos son incorrectos' }];
   }
 
   const isValid = await validatePassword(password, user.password);
 
   if (!isValid) {
-    return [null, false, { message: 'Invalid credentials' }];
+    return [null, false, { message: 'Los datos son incorrectos' }];
   }
 
   if (!(user.isActive === true)) {
-    return [null, false, { message: 'User not active' }];
+    return [null, false, { message: 'Usuario no activo' }];
   }
 
-  return [null, user];
+  const isAuthorized = await verify(authKey, user.secretKey);
+
+  if (!isAuthorized) {
+    return [null, false, { message: 'Código de autorización erróneo' }];
+  }
+
+  const { secretKey, ...result } = user;
+
+  return [null, result];
 };
 
 /**
